@@ -4,13 +4,14 @@ const app = express()
 const port = 3000;
 const authRoutes = require("./routes/authRoutes.js")
 const projectRoutes = require("./routes/projectRoutes.js")
+const skillRoutes = require("./routes/skillRoutes.js")
 
 app.use(express.json());
 connectDB();
 
 app.use("/api", authRoutes);
 app.use("/api", projectRoutes);
-
+app.use("/api", skillRoutes)
 
 app.get('/', (req, res) => {
     res.send("hello jee");
