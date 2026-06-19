@@ -9,17 +9,21 @@ const experieceRoutes = require("./routes/experienceRoutes.js")
 const educationRoutes = require("./routes/educationRoutes.js")
 const certificateRoutes = require("./routes/certificateRoutes.js")
 const contactRoutes = require("./routes/contactRoutes.js")
+const settingsRoutes = require("./routes/settingsRoutes.js")
+const analyticsRoutes = require("./routes/analyticsRoutes.js")
 
 app.use(express.json());
 connectDB();
 
-app.use("/api", authRoutes);
-app.use("/api", projectRoutes);
-app.use("/api", skillRoutes)
-app.use("/api", experieceRoutes)
-app.use("/api", educationRoutes)
-app.use("/api", certificateRoutes)
-app.use("/api", contactRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/skills", skillRoutes);
+app.use("/api/experiences", experieceRoutes);
+app.use("/api/educations", educationRoutes);
+app.use("/api/certificates", certificateRoutes);
+app.use("/api/contacts", contactRoutes);
+app.use("/api/settings", settingsRoutes)
+app.use("/api/analytics", analyticsRoutes)
 
 app.get('/', (req, res) => {
     res.send("hello jee");

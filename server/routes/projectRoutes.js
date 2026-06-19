@@ -1,10 +1,11 @@
 const express = require("express")
 const router = express.Router()
 const { createProject, deleteProject, updateProject, getAllProject } = require("../controllers/projectController")
+const { verifyToken } = require("../middleware/verifyToken")
 
-router.get("/get-all-project", getAllProject);
-router.post("/create-project", createProject);
-router.delete("/delete-project/:id", deleteProject);
-router.patch("/update-project/:id", updateProject);
+router.get("/", getAllProject);
+router.post("/", verifyToken, createProject);
+router.delete("/:id", verifyToken, deleteProject);
+router.patch("/:id", verifyToken, updateProject);
 
 module.exports = router;

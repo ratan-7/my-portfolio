@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { addExperience, deleteExperience, updateExperience, getAllExperience } = require("../controllers/experienceController")
+const { verifyToken } = require("../middleware/verifyToken")
 
-router.get("/get-all-experience", getAllExperience)
-router.post("/add-experience", addExperience);
-router.delete("/delete-experience/:id", deleteExperience)
-router.patch("/update-experience/:id", updateExperience)
+router.get("/", getAllExperience)
+router.post("/", verifyToken, addExperience);
+router.delete("/:id", verifyToken, deleteExperience)
+router.patch("/:id", verifyToken, updateExperience)
 
 module.exports = router;

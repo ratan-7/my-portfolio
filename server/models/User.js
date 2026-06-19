@@ -11,7 +11,8 @@ const UserSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -19,13 +20,10 @@ const UserSchema = new Schema({
     },
     role: {
         type: String,
-        default: 'user'
+        default: "admin"
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-});
+}, { timestamps: true }
+);
 
 const UserModel = model("user", UserSchema)
 
