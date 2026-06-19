@@ -1,4 +1,5 @@
 const Certificate = require("../models/Certificate")
+const cloudinary = require("../config/cloudinary");
 
 exports.getAllCertificate = async (req, res) => {
     try {
@@ -19,8 +20,11 @@ exports.getAllCertificate = async (req, res) => {
 exports.addCertificate = async (req, res) => {
     try {
         const { title, issuer, issueDate, certificateUrl, image } = req.body;
+        const result = await cloudinary.uploader.upload(
+            req.file.path
+        );
         const certificate = new Certificate({
-            title, issuer, issueDate, certificateUrl, image
+            title, issuer, issueDate, certificateUrl, image: result.secure_url
         })
         await certificate.save();
         res.status(200).json({

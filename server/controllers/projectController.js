@@ -1,5 +1,5 @@
 const Project = require("../models/Project.js")
-
+const cloudinary = require("../config/cloudinary");
 exports.getAllProject = async (req, res) => {
     try {
         const projects = await Project.find();
@@ -19,8 +19,11 @@ exports.getAllProject = async (req, res) => {
 exports.createProject = async (req, res) => {
     try {
         const { title, description, skills, image, url } = req.body;
+        const result = await cloudinary.uploader.upload(
+            req.file.path
+        );
         const project = new Project({
-            title, description, skills, image, url
+            title, description, skills, image: result.secure_url, url
         })
         await project.save();
         res.status(200).json({
