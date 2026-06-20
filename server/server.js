@@ -1,5 +1,6 @@
 const express = require('express')
 const connectDB = require('./config/db.js')
+const cors = require("cors")
 const app = express()
 const port = 3000;
 const authRoutes = require("./routes/authRoutes.js")
@@ -14,6 +15,11 @@ const analyticsRoutes = require("./routes/analyticsRoutes.js")
 
 app.use(express.json());
 connectDB();
+app.use(
+    cors({
+        origin: "http://localhost:5173"
+    })
+);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
