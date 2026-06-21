@@ -1,7 +1,6 @@
-const AddProjectModal = ({
+const AddExperienceModal = ({
     formData,
     setFormData,
-    setImage,
     handleSubmit,
     onClose
 }) => {
@@ -44,7 +43,7 @@ const AddProjectModal = ({
                         text-white
                         "
                     >
-                        Add Project 🚀
+                        Add Experience 💼
                     </h2>
 
                     <button
@@ -67,29 +66,14 @@ const AddProjectModal = ({
 
                     <input
                         type="text"
-                        placeholder="Project Title"
-                        className="
-                        w-full
-                        bg-slate-800
-                        border
-                        border-slate-700
-                        text-white
-                        p-3
-                        rounded-xl
-                        outline-none
-                        focus:border-blue-500
-                        "
+                        placeholder="Job Title"
+                        value={formData.title}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
                                 title: e.target.value
                             })
                         }
-                    />
-
-                    <textarea
-                        rows={4}
-                        placeholder="Project Description"
                         className="
                         w-full
                         bg-slate-800
@@ -101,6 +85,133 @@ const AddProjectModal = ({
                         outline-none
                         focus:border-blue-500
                         "
+                    />
+
+                    <input
+                        type="text"
+                        placeholder="Company Name"
+                        value={formData.company}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                company: e.target.value
+                            })
+                        }
+                        className="
+                        w-full
+                        bg-slate-800
+                        border
+                        border-slate-700
+                        text-white
+                        p-3
+                        rounded-xl
+                        outline-none
+                        focus:border-blue-500
+                        "
+                    />
+
+                    <input
+                        type="text"
+                        placeholder="Location"
+                        value={formData.location}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                location: e.target.value
+                            })
+                        }
+                        className="
+                        w-full
+                        bg-slate-800
+                        border
+                        border-slate-700
+                        text-white
+                        p-3
+                        rounded-xl
+                        outline-none
+                        focus:border-blue-500
+                        "
+                    />
+
+                    <div className="grid md:grid-cols-2 gap-4">
+
+                        <input
+                            type="date"
+                            value={formData.startDate}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    startDate: e.target.value
+                                })
+                            }
+                            className="
+                            w-full
+                            bg-slate-800
+                            border
+                            border-slate-700
+                            text-white
+                            p-3
+                            rounded-xl
+                            "
+                        />
+
+                        <input
+                            type="date"
+                            value={formData.endDate}
+                            disabled={
+                                formData.currentlyWorking
+                            }
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    endDate: e.target.value
+                                })
+                            }
+                            className="
+                            w-full
+                            bg-slate-800
+                            border
+                            border-slate-700
+                            text-white
+                            p-3
+                            rounded-xl
+                            disabled:opacity-50
+                            "
+                        />
+
+                    </div>
+
+                    <label
+                        className="
+                        flex
+                        items-center
+                        gap-3
+                        text-slate-300
+                        "
+                    >
+
+                        <input
+                            type="checkbox"
+                            checked={
+                                formData.currentlyWorking
+                            }
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    currentlyWorking:
+                                        e.target.checked
+                                })
+                            }
+                        />
+
+                        Currently Working Here
+
+                    </label>
+
+                    <textarea
+                        rows={4}
+                        placeholder="Describe your work, responsibilities and achievements..."
+                        value={formData.description}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
@@ -108,11 +219,6 @@ const AddProjectModal = ({
                                     e.target.value
                             })
                         }
-                    />
-
-                    <input
-                        type="text"
-                        placeholder="React, Node, MongoDB"
                         className="
                         w-full
                         bg-slate-800
@@ -124,18 +230,18 @@ const AddProjectModal = ({
                         outline-none
                         focus:border-blue-500
                         "
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                skills:
-                                    e.target.value
-                            })
-                        }
                     />
 
                     <input
                         type="text"
-                        placeholder="Project URL"
+                        placeholder="React, Node.js, MongoDB"
+                        value={formData.skills}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                skills: e.target.value
+                            })
+                        }
                         className="
                         w-full
                         bg-slate-800
@@ -147,43 +253,7 @@ const AddProjectModal = ({
                         outline-none
                         focus:border-blue-500
                         "
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                url:
-                                    e.target.value
-                            })
-                        }
                     />
-
-                    <div
-                        className="
-                        border-2
-                        border-dashed
-                        border-slate-700
-                        rounded-2xl
-                        p-6
-                        text-center
-                        "
-                    >
-
-                        <p className="text-slate-400 mb-3">
-                            Upload Project Image
-                        </p>
-
-                        <input
-                            type="file"
-                            className="
-                            text-slate-300
-                            "
-                            onChange={(e) =>
-                                setImage(
-                                    e.target.files[0]
-                                )
-                            }
-                        />
-
-                    </div>
 
                     <div
                         className="
@@ -191,7 +261,7 @@ const AddProjectModal = ({
                         flex-col
                         sm:flex-row
                         gap-3
-                        pt-3
+                        pt-2
                         "
                     >
 
@@ -205,10 +275,9 @@ const AddProjectModal = ({
                             py-3
                             rounded-xl
                             font-semibold
-                            transition-all
                             "
                         >
-                            Save Project
+                            Save Experience
                         </button>
 
                         <button
@@ -222,7 +291,6 @@ const AddProjectModal = ({
                             py-3
                             rounded-xl
                             font-semibold
-                            transition-all
                             "
                         >
                             Cancel
@@ -238,4 +306,4 @@ const AddProjectModal = ({
     );
 };
 
-export default AddProjectModal;
+export default AddExperienceModal;

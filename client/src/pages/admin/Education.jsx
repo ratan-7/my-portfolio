@@ -2,26 +2,25 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-    getAllProjects,
-    addProject,
-    updateProject,
-    deleteProject
+    getAllEducations,
+    addEducation,
+    updateEducation,
+    deleteEducation
 } from "../../services/api";
 
-import ProjectCard from "../../components/ProjectCard";
-import AddProjectModal from "../../components/AddProject";
-import EditProjectModal from "../../components/EditProject";
-import ViewProjectModal from "../../components/ViewProjectModel";
+import EducationCard from "../../components/education/EducationCard";
+import AddEducationModal from "../../components/education/AddEducation";
+import EditEducationModal from "../../components/education/EditEducation";
 
-const Projects = () => {
+const Education = () => {
 
     const navigate = useNavigate();
 
-    const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [educations, setEducations] =
+        useState([]);
 
-    const [selectedProject, setSelectedProject] =
-        useState(null);
+    const [loading, setLoading] =
+        useState(true);
 
     const [showAddModal, setShowAddModal] =
         useState(false);
@@ -29,17 +28,21 @@ const Projects = () => {
     const [showEditModal, setShowEditModal] =
         useState(false);
 
-    const [showViewModal, setShowViewModal] =
-        useState(false);
+    const [selectedEducation, setSelectedEducation] =
+        useState(null);
 
-    const [formData, setFormData] = useState({
-        title: "",
-        description: "",
-        skills: "",
-        url: ""
-    });
-
-    const [image, setImage] = useState(null);
+    const [formData, setFormData] =
+        useState({
+            school: "",
+            degree: "",
+            field: "",
+            startDate: "",
+            endDate: "",
+            currentlyWorking: true,
+            grade: "",
+            description: "",
+            skills: ""
+        });
 
     useEffect(() => {
 
@@ -51,21 +54,23 @@ const Projects = () => {
             return;
         }
 
-        fetchProjects();
+        fetchEducations();
 
     }, []);
 
-    const fetchProjects = async () => {
+    const fetchEducations = async () => {
 
         try {
 
             setLoading(true);
 
             const data =
-                await getAllProjects();
+                await getAllEducations();
 
-            setProjects(
-                data?.projects || []
+            setEducations(
+                data?.educations ||
+                data ||
+                []
             );
 
         } catch (error) {
@@ -79,59 +84,42 @@ const Projects = () => {
         }
     };
 
-    const handleAddProject =
+    const handleAddEducation =
         async (e) => {
 
             e.preventDefault();
 
             try {
 
-                const data =
-                    new FormData();
+                const payload = {
+                    ...formData,
+                    skills: formData.skills
+                        .split(",")
+                        .map(skill =>
+                            skill.trim()
+                        )
+                        .filter(Boolean)
+                };
 
-                data.append(
-                    "title",
-                    formData.title
+                await addEducation(
+                    payload
                 );
-
-                data.append(
-                    "description",
-                    formData.description
-                );
-
-                data.append(
-                    "skills",
-                    formData.skills
-                );
-
-                data.append(
-                    "url",
-                    formData.url
-                );
-
-                if (image) {
-
-                    data.append(
-                        "image",
-                        image
-                    );
-
-                }
-
-                await addProject(data);
 
                 setShowAddModal(false);
 
                 setFormData({
-                    title: "",
+                    school: "",
+                    degree: "",
+                    field: "",
+                    startDate: "",
+                    endDate: "",
+                    currentlyWorking: true,
+                    grade: "",
                     description: "",
-                    skills: "",
-                    url: ""
+                    skills: ""
                 });
 
-                setImage(null);
-
-                fetchProjects();
+                fetchEducations();
 
             } catch (error) {
 
@@ -140,7 +128,7 @@ const Projects = () => {
             }
         };
 
-    const handleUpdateProject =
+    const handleUpdateEducation =
         async (
             id,
             updatedData
@@ -148,18 +136,29 @@ const Projects = () => {
 
             try {
 
-                await updateProject(
+                const payload = {
+                    ...updatedData,
+                    skills:
+                        typeof updatedData.skills ===
+                            "string"
+                            ? updatedData.skills
+                                .split(",")
+                                .map(skill =>
+                                    skill.trim()
+                                )
+                                .filter(Boolean)
+                            : updatedData.skills
+                };
+
+                await updateEducation(
                     id,
-                    updatedData
+                    payload
                 );
 
                 setShowEditModal(false);
+                setSelectedEducation(null);
 
-                setSelectedProject(
-                    null
-                );
-
-                fetchProjects();
+                fetchEducations();
 
             } catch (error) {
 
@@ -168,22 +167,22 @@ const Projects = () => {
             }
         };
 
-    const handleDeleteProject =
+    const handleDeleteEducation =
         async (id) => {
 
             try {
 
                 const confirmDelete =
                     window.confirm(
-                        "Delete this project?"
+                        "Delete this education record?"
                     );
 
                 if (!confirmDelete)
                     return;
 
-                await deleteProject(id);
+                await deleteEducation(id);
 
-                fetchProjects();
+                fetchEducations();
 
             } catch (error) {
 
@@ -199,12 +198,12 @@ const Projects = () => {
                 className="
                 min-h-screen
                 flex
-                justify-center
                 items-center
+                justify-center
                 text-white
                 "
             >
-                Loading Projects...
+                Loading Education...
             </div>
         );
 
@@ -212,8 +211,6 @@ const Projects = () => {
 
     return (
         <div className="text-white">
-
-            {/* Header */}
 
             <div
                 className="
@@ -236,7 +233,7 @@ const Projects = () => {
                         font-bold
                         "
                     >
-                        Projects 🚀
+                        Education 🎓
                     </h1>
 
                     <p
@@ -245,21 +242,18 @@ const Projects = () => {
                         mt-2
                         "
                     >
-                        Manage your portfolio projects
+                        Manage your education details
                     </p>
 
                 </div>
 
                 <button
                     onClick={() =>
-                        setShowAddModal(
-                            true
-                        )
+                        setShowAddModal(true)
                     }
                     className="
                     bg-blue-600
                     hover:bg-blue-700
-                    text-white
                     px-6
                     py-3
                     rounded-2xl
@@ -269,14 +263,12 @@ const Projects = () => {
                     hover:scale-105
                     "
                 >
-                    + Add Project
+                    + Add Education
                 </button>
 
             </div>
 
-            {/* Empty State */}
-
-            {projects.length === 0 && (
+            {educations.length === 0 && (
 
                 <div
                     className="
@@ -295,7 +287,7 @@ const Projects = () => {
                         font-bold
                         "
                     >
-                        No Projects Found
+                        No Education Found
                     </h2>
 
                     <p
@@ -304,54 +296,39 @@ const Projects = () => {
                         mt-2
                         "
                     >
-                        Add your first project
+                        Add your first education
                     </p>
 
                 </div>
 
             )}
 
-            {/* Projects Grid */}
-
-            {projects.length > 0 && (
+            {educations.length > 0 && (
 
                 <div
                     className="
                     grid
                     grid-cols-1
                     md:grid-cols-2
-                    2xl:grid-cols-3
+                    xl:grid-cols-3
                     gap-6
                     "
                 >
 
-                    {projects.map(
-                        (project) => (
+                    {educations.map(
+                        (education) => (
 
-                            <ProjectCard
+                            <EducationCard
                                 key={
-                                    project._id
+                                    education._id
                                 }
-                                project={
-                                    project
+                                education={
+                                    education
                                 }
-
-                                onView={() => {
-
-                                    setSelectedProject(
-                                        project
-                                    );
-
-                                    setShowViewModal(
-                                        true
-                                    );
-
-                                }}
-
                                 onEdit={() => {
 
-                                    setSelectedProject(
-                                        project
+                                    setSelectedEducation(
+                                        education
                                     );
 
                                     setShowEditModal(
@@ -359,9 +336,8 @@ const Projects = () => {
                                     );
 
                                 }}
-
                                 onDelete={
-                                    handleDeleteProject
+                                    handleDeleteEducation
                                 }
                             />
 
@@ -372,64 +348,42 @@ const Projects = () => {
 
             )}
 
-            {/* Add Modal */}
-
             {showAddModal && (
 
-                <AddProjectModal
+                <AddEducationModal
                     formData={formData}
-                    setFormData={
-                        setFormData
-                    }
-                    setImage={
-                        setImage
-                    }
+                    setFormData={setFormData}
                     handleSubmit={
-                        handleAddProject
+                        handleAddEducation
                     }
                     onClose={() =>
-                        setShowAddModal(
-                            false
-                        )
+                        setShowAddModal(false)
                     }
                 />
 
             )}
-
-            {/* View Modal */}
-
-            {showViewModal && (
-
-                <ViewProjectModal
-                    project={
-                        selectedProject
-                    }
-                    onClose={() =>
-                        setShowViewModal(
-                            false
-                        )
-                    }
-                />
-
-            )}
-
-            {/* Edit Modal */}
 
             {showEditModal &&
-                selectedProject && (
+                selectedEducation && (
 
-                    <EditProjectModal
-                        project={
-                            selectedProject
+                    <EditEducationModal
+                        education={
+                            selectedEducation
                         }
                         onUpdate={
-                            handleUpdateProject
+                            handleUpdateEducation
                         }
-                        onClose={() =>
+                        onClose={() => {
+
                             setShowEditModal(
                                 false
-                            )
-                        }
+                            );
+
+                            setSelectedEducation(
+                                null
+                            );
+
+                        }}
                     />
 
                 )}
@@ -438,4 +392,4 @@ const Projects = () => {
     );
 };
 
-export default Projects;
+export default Education;

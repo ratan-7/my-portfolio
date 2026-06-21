@@ -1,7 +1,6 @@
-const AddProjectModal = ({
+const AddSkillModal = ({
     formData,
     setFormData,
-    setImage,
     handleSubmit,
     onClose
 }) => {
@@ -28,7 +27,7 @@ const AddProjectModal = ({
                 border-slate-800
                 rounded-3xl
                 w-full
-                max-w-2xl
+                max-w-lg
                 p-6
                 shadow-2xl
                 "
@@ -44,7 +43,7 @@ const AddProjectModal = ({
                         text-white
                         "
                     >
-                        Add Project 🚀
+                        Add Skill ⚡
                     </h2>
 
                     <button
@@ -67,7 +66,14 @@ const AddProjectModal = ({
 
                     <input
                         type="text"
-                        placeholder="Project Title"
+                        placeholder="Skill Name"
+                        value={formData.name}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                name: e.target.value
+                            })
+                        }
                         className="
                         w-full
                         bg-slate-800
@@ -79,17 +85,18 @@ const AddProjectModal = ({
                         outline-none
                         focus:border-blue-500
                         "
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                title: e.target.value
-                            })
-                        }
                     />
 
-                    <textarea
-                        rows={4}
-                        placeholder="Project Description"
+                    <input
+                        type="number"
+                        placeholder="Level (0-100)"
+                        value={formData.level}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                level: e.target.value
+                            })
+                        }
                         className="
                         w-full
                         bg-slate-800
@@ -101,18 +108,18 @@ const AddProjectModal = ({
                         outline-none
                         focus:border-blue-500
                         "
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                description:
-                                    e.target.value
-                            })
-                        }
                     />
 
                     <input
                         type="text"
-                        placeholder="React, Node, MongoDB"
+                        placeholder="Category"
+                        value={formData.catagory}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                catagory: e.target.value
+                            })
+                        }
                         className="
                         w-full
                         bg-slate-800
@@ -124,18 +131,18 @@ const AddProjectModal = ({
                         outline-none
                         focus:border-blue-500
                         "
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                skills:
-                                    e.target.value
-                            })
-                        }
                     />
 
                     <input
                         type="text"
-                        placeholder="Project URL"
+                        placeholder="Icon URL"
+                        value={formData.icon}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                icon: e.target.value
+                            })
+                        }
                         className="
                         w-full
                         bg-slate-800
@@ -147,43 +154,30 @@ const AddProjectModal = ({
                         outline-none
                         focus:border-blue-500
                         "
+                    />
+
+                    <input
+                        type="number"
+                        placeholder="Display Order"
+                        value={formData.order}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                url:
-                                    e.target.value
+                                order: e.target.value
                             })
                         }
-                    />
-
-                    <div
                         className="
-                        border-2
-                        border-dashed
+                        w-full
+                        bg-slate-800
+                        border
                         border-slate-700
-                        rounded-2xl
-                        p-6
-                        text-center
+                        text-white
+                        p-3
+                        rounded-xl
+                        outline-none
+                        focus:border-blue-500
                         "
-                    >
-
-                        <p className="text-slate-400 mb-3">
-                            Upload Project Image
-                        </p>
-
-                        <input
-                            type="file"
-                            className="
-                            text-slate-300
-                            "
-                            onChange={(e) =>
-                                setImage(
-                                    e.target.files[0]
-                                )
-                            }
-                        />
-
-                    </div>
+                    />
 
                     <div
                         className="
@@ -191,7 +185,7 @@ const AddProjectModal = ({
                         flex-col
                         sm:flex-row
                         gap-3
-                        pt-3
+                        pt-2
                         "
                     >
 
@@ -208,7 +202,7 @@ const AddProjectModal = ({
                             transition-all
                             "
                         >
-                            Save Project
+                            Save Skill
                         </button>
 
                         <button
@@ -238,4 +232,4 @@ const AddProjectModal = ({
     );
 };
 
-export default AddProjectModal;
+export default AddSkillModal;

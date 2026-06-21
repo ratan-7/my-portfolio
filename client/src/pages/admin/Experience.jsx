@@ -2,26 +2,22 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-    getAllProjects,
-    addProject,
-    updateProject,
-    deleteProject
+    getAllExperiences,
+    addExperience,
+    updateExperience,
+    deleteExperience
 } from "../../services/api";
 
-import ProjectCard from "../../components/ProjectCard";
-import AddProjectModal from "../../components/AddProject";
-import EditProjectModal from "../../components/EditProject";
-import ViewProjectModal from "../../components/ViewProjectModel";
+import ExperienceCard from "../../components/experiences/ExperienceCard";
+import AddExperienceModal from "../../components/experiences/AddExperience";
+import EditExperienceModal from "../../components/experiences/EditExperience";
 
-const Projects = () => {
+const Experience = () => {
 
     const navigate = useNavigate();
 
-    const [projects, setProjects] = useState([]);
+    const [experiences, setExperiences] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    const [selectedProject, setSelectedProject] =
-        useState(null);
 
     const [showAddModal, setShowAddModal] =
         useState(false);
@@ -29,17 +25,19 @@ const Projects = () => {
     const [showEditModal, setShowEditModal] =
         useState(false);
 
-    const [showViewModal, setShowViewModal] =
-        useState(false);
+    const [selectedExperience, setSelectedExperience] =
+        useState(null);
 
     const [formData, setFormData] = useState({
         title: "",
+        company: "",
+        location: "",
+        startDate: "",
+        endDate: "",
+        currentlyWorking: true,
         description: "",
-        skills: "",
-        url: ""
+        skills: ""
     });
-
-    const [image, setImage] = useState(null);
 
     useEffect(() => {
 
@@ -51,21 +49,23 @@ const Projects = () => {
             return;
         }
 
-        fetchProjects();
+        fetchExperiences();
 
     }, []);
 
-    const fetchProjects = async () => {
+    const fetchExperiences = async () => {
 
         try {
 
             setLoading(true);
 
             const data =
-                await getAllProjects();
+                await getAllExperiences();
 
-            setProjects(
-                data?.projects || []
+            setExperiences(
+                data?.experiences ||
+                data ||
+                []
             );
 
         } catch (error) {
@@ -79,59 +79,41 @@ const Projects = () => {
         }
     };
 
-    const handleAddProject =
+    const handleAddExperience =
         async (e) => {
 
             e.preventDefault();
 
             try {
 
-                const data =
-                    new FormData();
+                const payload = {
+                    ...formData,
+                    skills: formData.skills
+                        .split(",")
+                        .map(skill =>
+                            skill.trim()
+                        )
+                        .filter(Boolean)
+                };
 
-                data.append(
-                    "title",
-                    formData.title
+                await addExperience(
+                    payload
                 );
-
-                data.append(
-                    "description",
-                    formData.description
-                );
-
-                data.append(
-                    "skills",
-                    formData.skills
-                );
-
-                data.append(
-                    "url",
-                    formData.url
-                );
-
-                if (image) {
-
-                    data.append(
-                        "image",
-                        image
-                    );
-
-                }
-
-                await addProject(data);
 
                 setShowAddModal(false);
 
                 setFormData({
                     title: "",
+                    company: "",
+                    location: "",
+                    startDate: "",
+                    endDate: "",
+                    currentlyWorking: true,
                     description: "",
-                    skills: "",
-                    url: ""
+                    skills: ""
                 });
 
-                setImage(null);
-
-                fetchProjects();
+                fetchExperiences();
 
             } catch (error) {
 
@@ -140,7 +122,7 @@ const Projects = () => {
             }
         };
 
-    const handleUpdateProject =
+    const handleUpdateExperience =
         async (
             id,
             updatedData
@@ -148,18 +130,29 @@ const Projects = () => {
 
             try {
 
-                await updateProject(
+                const payload = {
+                    ...updatedData,
+                    skills:
+                        typeof updatedData.skills ===
+                            "string"
+                            ? updatedData.skills
+                                .split(",")
+                                .map(skill =>
+                                    skill.trim()
+                                )
+                                .filter(Boolean)
+                            : updatedData.skills
+                };
+
+                await updateExperience(
                     id,
-                    updatedData
+                    payload
                 );
 
                 setShowEditModal(false);
+                setSelectedExperience(null);
 
-                setSelectedProject(
-                    null
-                );
-
-                fetchProjects();
+                fetchExperiences();
 
             } catch (error) {
 
@@ -168,22 +161,22 @@ const Projects = () => {
             }
         };
 
-    const handleDeleteProject =
+    const handleDeleteExperience =
         async (id) => {
 
             try {
 
                 const confirmDelete =
                     window.confirm(
-                        "Delete this project?"
+                        "Delete this experience?"
                     );
 
                 if (!confirmDelete)
                     return;
 
-                await deleteProject(id);
+                await deleteExperience(id);
 
-                fetchProjects();
+                fetchExperiences();
 
             } catch (error) {
 
@@ -199,12 +192,12 @@ const Projects = () => {
                 className="
                 min-h-screen
                 flex
-                justify-center
                 items-center
+                justify-center
                 text-white
                 "
             >
-                Loading Projects...
+                Loading Experience...
             </div>
         );
 
@@ -236,7 +229,7 @@ const Projects = () => {
                         font-bold
                         "
                     >
-                        Projects 🚀
+                        Experience 💼
                     </h1>
 
                     <p
@@ -245,21 +238,18 @@ const Projects = () => {
                         mt-2
                         "
                     >
-                        Manage your portfolio projects
+                        Manage your work experience
                     </p>
 
                 </div>
 
                 <button
                     onClick={() =>
-                        setShowAddModal(
-                            true
-                        )
+                        setShowAddModal(true)
                     }
                     className="
                     bg-blue-600
                     hover:bg-blue-700
-                    text-white
                     px-6
                     py-3
                     rounded-2xl
@@ -269,14 +259,14 @@ const Projects = () => {
                     hover:scale-105
                     "
                 >
-                    + Add Project
+                    + Add Experience
                 </button>
 
             </div>
 
             {/* Empty State */}
 
-            {projects.length === 0 && (
+            {experiences.length === 0 && (
 
                 <div
                     className="
@@ -295,7 +285,7 @@ const Projects = () => {
                         font-bold
                         "
                     >
-                        No Projects Found
+                        No Experience Found
                     </h2>
 
                     <p
@@ -304,54 +294,41 @@ const Projects = () => {
                         mt-2
                         "
                     >
-                        Add your first project
+                        Add your first experience
                     </p>
 
                 </div>
 
             )}
 
-            {/* Projects Grid */}
+            {/* Experience Grid */}
 
-            {projects.length > 0 && (
+            {experiences.length > 0 && (
 
                 <div
                     className="
                     grid
                     grid-cols-1
                     md:grid-cols-2
-                    2xl:grid-cols-3
+                    xl:grid-cols-3
                     gap-6
                     "
                 >
 
-                    {projects.map(
-                        (project) => (
+                    {experiences.map(
+                        (experience) => (
 
-                            <ProjectCard
+                            <ExperienceCard
                                 key={
-                                    project._id
+                                    experience._id
                                 }
-                                project={
-                                    project
+                                experience={
+                                    experience
                                 }
-
-                                onView={() => {
-
-                                    setSelectedProject(
-                                        project
-                                    );
-
-                                    setShowViewModal(
-                                        true
-                                    );
-
-                                }}
-
                                 onEdit={() => {
 
-                                    setSelectedProject(
-                                        project
+                                    setSelectedExperience(
+                                        experience
                                     );
 
                                     setShowEditModal(
@@ -359,9 +336,8 @@ const Projects = () => {
                                     );
 
                                 }}
-
                                 onDelete={
-                                    handleDeleteProject
+                                    handleDeleteExperience
                                 }
                             />
 
@@ -372,20 +348,13 @@ const Projects = () => {
 
             )}
 
-            {/* Add Modal */}
-
             {showAddModal && (
 
-                <AddProjectModal
+                <AddExperienceModal
                     formData={formData}
-                    setFormData={
-                        setFormData
-                    }
-                    setImage={
-                        setImage
-                    }
+                    setFormData={setFormData}
                     handleSubmit={
-                        handleAddProject
+                        handleAddExperience
                     }
                     onClose={() =>
                         setShowAddModal(
@@ -396,40 +365,27 @@ const Projects = () => {
 
             )}
 
-            {/* View Modal */}
-
-            {showViewModal && (
-
-                <ViewProjectModal
-                    project={
-                        selectedProject
-                    }
-                    onClose={() =>
-                        setShowViewModal(
-                            false
-                        )
-                    }
-                />
-
-            )}
-
-            {/* Edit Modal */}
-
             {showEditModal &&
-                selectedProject && (
+                selectedExperience && (
 
-                    <EditProjectModal
-                        project={
-                            selectedProject
+                    <EditExperienceModal
+                        experience={
+                            selectedExperience
                         }
                         onUpdate={
-                            handleUpdateProject
+                            handleUpdateExperience
                         }
-                        onClose={() =>
+                        onClose={() => {
+
                             setShowEditModal(
                                 false
-                            )
-                        }
+                            );
+
+                            setSelectedExperience(
+                                null
+                            );
+
+                        }}
                     />
 
                 )}
@@ -438,4 +394,4 @@ const Projects = () => {
     );
 };
 
-export default Projects;
+export default Experience;

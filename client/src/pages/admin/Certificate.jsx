@@ -2,26 +2,25 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-    getAllProjects,
-    addProject,
-    updateProject,
-    deleteProject
+    getAllCertificates,
+    addCertificate,
+    updateCertificate,
+    deleteCertificate
 } from "../../services/api";
 
-import ProjectCard from "../../components/ProjectCard";
-import AddProjectModal from "../../components/AddProject";
-import EditProjectModal from "../../components/EditProject";
-import ViewProjectModal from "../../components/ViewProjectModel";
+import CertificateCard from "../../components/certificates/CertificateCard";
+import AddCertificateModal from "../../components/certificates/AddCertificate";
+import EditCertificateModal from "../../components/certificates/EditCertificate";
 
-const Projects = () => {
+const Certificates = () => {
 
     const navigate = useNavigate();
 
-    const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] =
+        useState(true);
 
-    const [selectedProject, setSelectedProject] =
-        useState(null);
+    const [certificates, setCertificates] =
+        useState([]);
 
     const [showAddModal, setShowAddModal] =
         useState(false);
@@ -29,17 +28,20 @@ const Projects = () => {
     const [showEditModal, setShowEditModal] =
         useState(false);
 
-    const [showViewModal, setShowViewModal] =
-        useState(false);
+    const [selectedCertificate,
+        setSelectedCertificate] =
+        useState(null);
 
-    const [formData, setFormData] = useState({
-        title: "",
-        description: "",
-        skills: "",
-        url: ""
-    });
+    const [image, setImage] =
+        useState(null);
 
-    const [image, setImage] = useState(null);
+    const [formData, setFormData] =
+        useState({
+            title: "",
+            issuer: "",
+            issueDate: "",
+            certificateUrl: ""
+        });
 
     useEffect(() => {
 
@@ -51,35 +53,38 @@ const Projects = () => {
             return;
         }
 
-        fetchProjects();
+        fetchCertificates();
 
     }, []);
 
-    const fetchProjects = async () => {
+    const fetchCertificates =
+        async () => {
 
-        try {
+            try {
 
-            setLoading(true);
+                setLoading(true);
 
-            const data =
-                await getAllProjects();
+                const data =
+                    await getAllCertificates();
 
-            setProjects(
-                data?.projects || []
-            );
+                setCertificates(
+                    data?.certificates ||
+                    data ||
+                    []
+                );
 
-        } catch (error) {
+            } catch (error) {
 
-            console.log(error);
+                console.log(error);
 
-        } finally {
+            } finally {
 
-            setLoading(false);
+                setLoading(false);
 
-        }
-    };
+            }
+        };
 
-    const handleAddProject =
+    const handleAddCertificate =
         async (e) => {
 
             e.preventDefault();
@@ -95,43 +100,43 @@ const Projects = () => {
                 );
 
                 data.append(
-                    "description",
-                    formData.description
+                    "issuer",
+                    formData.issuer
                 );
 
                 data.append(
-                    "skills",
-                    formData.skills
+                    "issueDate",
+                    formData.issueDate
                 );
 
                 data.append(
-                    "url",
-                    formData.url
+                    "certificateUrl",
+                    formData.certificateUrl
                 );
 
                 if (image) {
-
                     data.append(
                         "image",
                         image
                     );
-
                 }
 
-                await addProject(data);
+                await addCertificate(
+                    data
+                );
 
                 setShowAddModal(false);
 
                 setFormData({
                     title: "",
-                    description: "",
-                    skills: "",
-                    url: ""
+                    issuer: "",
+                    issueDate: "",
+                    certificateUrl: ""
                 });
 
                 setImage(null);
 
-                fetchProjects();
+                fetchCertificates();
 
             } catch (error) {
 
@@ -140,7 +145,7 @@ const Projects = () => {
             }
         };
 
-    const handleUpdateProject =
+    const handleUpdateCertificate =
         async (
             id,
             updatedData
@@ -148,18 +153,18 @@ const Projects = () => {
 
             try {
 
-                await updateProject(
+                await updateCertificate(
                     id,
                     updatedData
                 );
 
                 setShowEditModal(false);
 
-                setSelectedProject(
+                setSelectedCertificate(
                     null
                 );
 
-                fetchProjects();
+                fetchCertificates();
 
             } catch (error) {
 
@@ -168,22 +173,22 @@ const Projects = () => {
             }
         };
 
-    const handleDeleteProject =
+    const handleDeleteCertificate =
         async (id) => {
 
             try {
 
                 const confirmDelete =
                     window.confirm(
-                        "Delete this project?"
+                        "Delete this certificate?"
                     );
 
                 if (!confirmDelete)
                     return;
 
-                await deleteProject(id);
+                await deleteCertificate(id);
 
-                fetchProjects();
+                fetchCertificates();
 
             } catch (error) {
 
@@ -199,21 +204,18 @@ const Projects = () => {
                 className="
                 min-h-screen
                 flex
-                justify-center
                 items-center
+                justify-center
                 text-white
                 "
             >
-                Loading Projects...
+                Loading Certificates...
             </div>
         );
-
     }
 
     return (
         <div className="text-white">
-
-            {/* Header */}
 
             <div
                 className="
@@ -236,7 +238,7 @@ const Projects = () => {
                         font-bold
                         "
                     >
-                        Projects 🚀
+                        Certificates 🏆
                     </h1>
 
                     <p
@@ -245,21 +247,18 @@ const Projects = () => {
                         mt-2
                         "
                     >
-                        Manage your portfolio projects
+                        Manage your certifications
                     </p>
 
                 </div>
 
                 <button
                     onClick={() =>
-                        setShowAddModal(
-                            true
-                        )
+                        setShowAddModal(true)
                     }
                     className="
                     bg-blue-600
                     hover:bg-blue-700
-                    text-white
                     px-6
                     py-3
                     rounded-2xl
@@ -269,14 +268,12 @@ const Projects = () => {
                     hover:scale-105
                     "
                 >
-                    + Add Project
+                    + Add Certificate
                 </button>
 
             </div>
 
-            {/* Empty State */}
-
-            {projects.length === 0 && (
+            {certificates.length === 0 ? (
 
                 <div
                     className="
@@ -295,7 +292,7 @@ const Projects = () => {
                         font-bold
                         "
                     >
-                        No Projects Found
+                        No Certificates Found
                     </h2>
 
                     <p
@@ -304,54 +301,37 @@ const Projects = () => {
                         mt-2
                         "
                     >
-                        Add your first project
+                        Add your first certificate
                     </p>
 
                 </div>
 
-            )}
-
-            {/* Projects Grid */}
-
-            {projects.length > 0 && (
+            ) : (
 
                 <div
                     className="
                     grid
                     grid-cols-1
                     md:grid-cols-2
-                    2xl:grid-cols-3
+                    xl:grid-cols-3
                     gap-6
                     "
                 >
 
-                    {projects.map(
-                        (project) => (
+                    {certificates.map(
+                        (certificate) => (
 
-                            <ProjectCard
+                            <CertificateCard
                                 key={
-                                    project._id
+                                    certificate._id
                                 }
-                                project={
-                                    project
+                                certificate={
+                                    certificate
                                 }
-
-                                onView={() => {
-
-                                    setSelectedProject(
-                                        project
-                                    );
-
-                                    setShowViewModal(
-                                        true
-                                    );
-
-                                }}
-
                                 onEdit={() => {
 
-                                    setSelectedProject(
-                                        project
+                                    setSelectedCertificate(
+                                        certificate
                                     );
 
                                     setShowEditModal(
@@ -359,9 +339,8 @@ const Projects = () => {
                                     );
 
                                 }}
-
                                 onDelete={
-                                    handleDeleteProject
+                                    handleDeleteCertificate
                                 }
                             />
 
@@ -372,20 +351,16 @@ const Projects = () => {
 
             )}
 
-            {/* Add Modal */}
-
             {showAddModal && (
 
-                <AddProjectModal
+                <AddCertificateModal
                     formData={formData}
                     setFormData={
                         setFormData
                     }
-                    setImage={
-                        setImage
-                    }
+                    setImage={setImage}
                     handleSubmit={
-                        handleAddProject
+                        handleAddCertificate
                     }
                     onClose={() =>
                         setShowAddModal(
@@ -396,40 +371,27 @@ const Projects = () => {
 
             )}
 
-            {/* View Modal */}
-
-            {showViewModal && (
-
-                <ViewProjectModal
-                    project={
-                        selectedProject
-                    }
-                    onClose={() =>
-                        setShowViewModal(
-                            false
-                        )
-                    }
-                />
-
-            )}
-
-            {/* Edit Modal */}
-
             {showEditModal &&
-                selectedProject && (
+                selectedCertificate && (
 
-                    <EditProjectModal
-                        project={
-                            selectedProject
+                    <EditCertificateModal
+                        certificate={
+                            selectedCertificate
                         }
                         onUpdate={
-                            handleUpdateProject
+                            handleUpdateCertificate
                         }
-                        onClose={() =>
+                        onClose={() => {
+
                             setShowEditModal(
                                 false
-                            )
-                        }
+                            );
+
+                            setSelectedCertificate(
+                                null
+                            );
+
+                        }}
                     />
 
                 )}
@@ -438,4 +400,4 @@ const Projects = () => {
     );
 };
 
-export default Projects;
+export default Certificates;

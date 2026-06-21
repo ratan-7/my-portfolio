@@ -1,21 +1,79 @@
-const AddProjectModal = ({
-    formData,
-    setFormData,
-    setImage,
-    handleSubmit,
+import { useState } from "react";
+
+const EditCertificateModal = ({
+    certificate,
+    onUpdate,
     onClose
 }) => {
+
+    const [formData, setFormData] =
+        useState({
+            title:
+                certificate.title || "",
+            issuer:
+                certificate.issuer || "",
+            issueDate:
+                certificate.issueDate
+                    ? certificate.issueDate.slice(
+                        0,
+                        10
+                    )
+                    : "",
+            certificateUrl:
+                certificate.certificateUrl ||
+                ""
+        });
+
+    const [image, setImage] =
+        useState(null);
+
+    const handleSubmit = (e) => {
+
+        e.preventDefault();
+
+        const data =
+            new FormData();
+
+        data.append(
+            "title",
+            formData.title
+        );
+
+        data.append(
+            "issuer",
+            formData.issuer
+        );
+
+        data.append(
+            "issueDate",
+            formData.issueDate
+        );
+
+        data.append(
+            "certificateUrl",
+            formData.certificateUrl
+        );
+
+        if (image) {
+            data.append(
+                "image",
+                image
+            );
+        }
+
+        onUpdate(
+            certificate._id,
+            data
+        );
+    };
 
     return (
         <div
             className="
-            fixed
-            inset-0
-            z-50
+            fixed inset-0 z-50
             bg-black/70
             backdrop-blur-sm
-            flex
-            items-center
+            flex items-center
             justify-center
             p-4
             "
@@ -23,12 +81,12 @@ const AddProjectModal = ({
 
             <div
                 className="
+                w-full
+                max-w-xl
                 bg-slate-900
                 border
                 border-slate-800
                 rounded-3xl
-                w-full
-                max-w-2xl
                 p-6
                 shadow-2xl
                 "
@@ -44,7 +102,7 @@ const AddProjectModal = ({
                         text-white
                         "
                     >
-                        Add Project 🚀
+                        Edit Certificate 🏆
                     </h2>
 
                     <button
@@ -67,52 +125,39 @@ const AddProjectModal = ({
 
                     <input
                         type="text"
-                        placeholder="Project Title"
-                        className="
-                        w-full
-                        bg-slate-800
-                        border
-                        border-slate-700
-                        text-white
-                        p-3
-                        rounded-xl
-                        outline-none
-                        focus:border-blue-500
-                        "
+                        placeholder="Certificate Title"
+                        value={formData.title}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                title: e.target.value
-                            })
-                        }
-                    />
-
-                    <textarea
-                        rows={4}
-                        placeholder="Project Description"
-                        className="
-                        w-full
-                        bg-slate-800
-                        border
-                        border-slate-700
-                        text-white
-                        p-3
-                        rounded-xl
-                        outline-none
-                        focus:border-blue-500
-                        "
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                description:
+                                title:
                                     e.target.value
                             })
                         }
+                        className="
+                        w-full
+                        bg-slate-800
+                        border
+                        border-slate-700
+                        text-white
+                        p-3
+                        rounded-xl
+                        focus:border-blue-500
+                        outline-none
+                        "
                     />
 
                     <input
                         type="text"
-                        placeholder="React, Node, MongoDB"
+                        placeholder="Issuer"
+                        value={formData.issuer}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                issuer:
+                                    e.target.value
+                            })
+                        }
                         className="
                         w-full
                         bg-slate-800
@@ -121,21 +166,47 @@ const AddProjectModal = ({
                         text-white
                         p-3
                         rounded-xl
-                        outline-none
                         focus:border-blue-500
+                        outline-none
                         "
+                    />
+
+                    <input
+                        type="date"
+                        value={
+                            formData.issueDate
+                        }
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                skills:
+                                issueDate:
                                     e.target.value
                             })
                         }
+                        className="
+                        w-full
+                        bg-slate-800
+                        border
+                        border-slate-700
+                        text-white
+                        p-3
+                        rounded-xl
+                        "
                     />
 
                     <input
                         type="text"
-                        placeholder="Project URL"
+                        placeholder="Certificate URL"
+                        value={
+                            formData.certificateUrl
+                        }
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                certificateUrl:
+                                    e.target.value
+                            })
+                        }
                         className="
                         w-full
                         bg-slate-800
@@ -144,43 +215,34 @@ const AddProjectModal = ({
                         text-white
                         p-3
                         rounded-xl
-                        outline-none
                         focus:border-blue-500
+                        outline-none
                         "
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                url:
-                                    e.target.value
-                            })
-                        }
                     />
 
-                    <div
-                        className="
-                        border-2
-                        border-dashed
-                        border-slate-700
-                        rounded-2xl
-                        p-6
-                        text-center
-                        "
-                    >
+                    <div>
 
-                        <p className="text-slate-400 mb-3">
-                            Upload Project Image
-                        </p>
+                        <label
+                            className="
+                            block
+                            text-slate-300
+                            mb-2
+                            "
+                        >
+                            Certificate Image
+                        </label>
 
                         <input
                             type="file"
-                            className="
-                            text-slate-300
-                            "
                             onChange={(e) =>
                                 setImage(
                                     e.target.files[0]
                                 )
                             }
+                            className="
+                            w-full
+                            text-slate-300
+                            "
                         />
 
                     </div>
@@ -191,7 +253,7 @@ const AddProjectModal = ({
                         flex-col
                         sm:flex-row
                         gap-3
-                        pt-3
+                        pt-2
                         "
                     >
 
@@ -199,16 +261,15 @@ const AddProjectModal = ({
                             type="submit"
                             className="
                             flex-1
-                            bg-blue-600
-                            hover:bg-blue-700
+                            bg-emerald-600
+                            hover:bg-emerald-700
                             text-white
                             py-3
                             rounded-xl
                             font-semibold
-                            transition-all
                             "
                         >
-                            Save Project
+                            Update Certificate
                         </button>
 
                         <button
@@ -222,7 +283,6 @@ const AddProjectModal = ({
                             py-3
                             rounded-xl
                             font-semibold
-                            transition-all
                             "
                         >
                             Cancel
@@ -238,4 +298,4 @@ const AddProjectModal = ({
     );
 };
 
-export default AddProjectModal;
+export default EditCertificateModal;
